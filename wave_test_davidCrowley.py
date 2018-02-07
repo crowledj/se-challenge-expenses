@@ -70,14 +70,14 @@ for i,val in enumerate(employee_name_vect):
 ## upload data to dB :
 connection = sqlite3.connect("company.db")
 cursor = connection.cursor()
-sql_cmd= """ CREATE TABLE employee_2 (  keyz VARCHAR(50) PRIMARY KEY, date DATE, category VARCHAR(30),employee_name VARCHAR(30),address VARCHAR(30),expense_description_vect INTEGER,pre_tax_amounts INTEGER,tax_name_vect VARCHAR(30),tax_amounts INTEGER); """
+sql_cmd= """ CREATE TABLE employee_2 ( date DATE, category VARCHAR(30),employee_name VARCHAR(30),address VARCHAR(30),expense_description_vect VARCHAR(30),pre_tax_amounts INTEGER,tax_name_vect VARCHAR(30),tax_amounts INTEGER, PRIMARY KEY (date,tax_amounts,employee_name)); """
 cursor.execute(sql_cmd)
 
 
 #staff_data = [ ("William", "Shakespeare", "m", "1961-10-25"), ("Frank", "Schiller", "m", "1955-08-17"), ("Jane", "Wall", "f", "1989-03-14") ]
 for key in staff_data:
-    format_str = """ INSERT INTO employee_2 (keyz, date, category, employee_name, address,expense_description_vect,pre_tax_amounts,tax_name_vect,tax_amounts) VALUES ( "{keyz}",{date}", "{category}", "{employee_name}", "{address}","{expense_description_vect}","{pre_tax_amounts}","{tax_name_vect}","{tax_amounts}");"""   
-    sql_command = format_str.format(keyz=key,date=staff_data[key][0], category=staff_data[key][1], employee_name=staff_data[key][2], address = staff_data[key][3] , expense_description_vect=staff_data[key][4],pre_tax_amounts=staff_data[key][5],tax_name_vect=staff_data[key][6],tax_amounts=staff_data[key][7])
+    format_str = """ INSERT INTO employee_2 (date, category, employee_name, address,expense_description_vect,pre_tax_amounts,tax_name_vect,tax_amounts) VALUES ( "{date}", "{category}", "{employee_name}", "{address}","{expense_description_vect}","{pre_tax_amounts}","{tax_name_vect}","{tax_amounts}");"""   
+    sql_command = format_str.format(date=staff_data[key][0], category=staff_data[key][1], employee_name=staff_data[key][2], address = staff_data[key][3] , expense_description_vect=staff_data[key][4],pre_tax_amounts=staff_data[key][5],tax_name_vect=staff_data[key][6],tax_amounts=staff_data[key][7])
     cursor.execute(sql_command)
     
     
@@ -88,7 +88,7 @@ print(cursor.fetchall())
     
 
 #cursor.execute("SELECT * FROM employee") 
-#print("fetchall:")
+#print("fetchall:") 
 #result = cursor.fetchall() 
 #for r in result:
     #print(r)
