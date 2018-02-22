@@ -37,9 +37,10 @@ ind=0;
 
 
 ## grab headers first :
-
 with open(filename) as f:
     reader = csv.reader(f)
+    #skip the header file:
+    next(reader,None)
     for record in reader:
         print(record)   
         
@@ -68,70 +69,32 @@ for i,val in enumerate(employee_name_vect):
 
 
 ## upload data to dB :
-connection = sqlite3.connect("company.db")
+connection = sqlite3.connect("company_test4.db")
 cursor = connection.cursor()
-sql_cmd= """ CREATE TABLE employee_2 ( date DATE, category VARCHAR(30),employee_name VARCHAR(30),address VARCHAR(30),expense_description_vect VARCHAR(30),pre_tax_amounts INTEGER,tax_name_vect VARCHAR(30),tax_amounts INTEGER, PRIMARY KEY (date,tax_amounts,employee_name)); """
+#sql_cmd= """ CREATE TABLE employee_4 ( date DATE, category VARCHAR(30),employee_name VARCHAR(30),address VARCHAR(30),expense_description_vect VARCHAR(30),pre_tax_amounts INTEGER,tax_name_vect VARCHAR(30), tax_amounts PRIMARY KEY ); """
+sql_cmd= """ CREATE TABLE IF NOT EXISTS employeeTable_e ( date DATE, category VARCHAR(30),employee_name VARCHAR(30),address VARCHAR(30),expense_description_vect VARCHAR(30),pre_tax_amounts REAL,tax_name_vect VARCHAR(30), tax_amounts REAL, PRIMARY KEY (employee_name,date)); """
 cursor.execute(sql_cmd)
 
 
 #staff_data = [ ("William", "Shakespeare", "m", "1961-10-25"), ("Frank", "Schiller", "m", "1955-08-17"), ("Jane", "Wall", "f", "1989-03-14") ]
 for key in staff_data:
-    format_str = """ INSERT INTO employee_2 (date, category, employee_name, address,expense_description_vect,pre_tax_amounts,tax_name_vect,tax_amounts) VALUES ( "{date}", "{category}", "{employee_name}", "{address}","{expense_description_vect}","{pre_tax_amounts}","{tax_name_vect}","{tax_amounts}");"""   
+    format_str = """ INSERT INTO employeeTable_e (date, category, employee_name, address,expense_description_vect,pre_tax_amounts,tax_name_vect,tax_amounts) VALUES ( "{date}", "{category}", "{employee_name}", "{address}","{expense_description_vect}","{pre_tax_amounts}","{tax_name_vect}","{tax_amounts}");"""   
     sql_command = format_str.format(date=staff_data[key][0], category=staff_data[key][1], employee_name=staff_data[key][2], address = staff_data[key][3] , expense_description_vect=staff_data[key][4],pre_tax_amounts=staff_data[key][5],tax_name_vect=staff_data[key][6],tax_amounts=staff_data[key][7])
     cursor.execute(sql_command)
     
     
-    
-cursor.execute("SELECT * FROM employee_2;")
-print(cursor.fetchall())    
-    
-    
-
-#cursor.execute("SELECT * FROM employee") 
-#print("fetchall:") 
-#result = cursor.fetchall() 
-#for r in result:
-    #print(r)
-#cursor.execute("SELECT * FROM employee") 
-#print("\nfetch one:")
-#res = cursor.fetchone() 
-#print(res)
-
-#fetchall:
-#(1, 'William', 'Shakespeare', 'm', None, '1961-10-25')
-#(2, 'Frank', 'Schiller', 'm', None, '1955-08-17')
-#(3, 'Jane', 'Wall', 'f', None, '1989-03-14')
-
-#fetch one:
-#(1, 'William', 'Shakespeare', 'm', None, '1961-10-25') 
- 
- 
- 
- 
- 
-#uniq_data=[]     
-#uniq_Stuff=[]   
-#uniq_Stuff.append('marker')
-#uniq_data.append('marker')
+connection.commit()
 
 
+   
+#cursor.execute("SELECT * FROM employeeTable_e;")
+#print(cursor.fetchall())    
 
-#try:
-    #with open(filename, encoding="utf-8") as csvfile:
-        
-        #for row in csvfile:   
-            
-            #print(' --- in outer loop c.sv for loop  --- row =  \n ',row)    
-                
-            #ind+=1
-            #if ind <= 2:
-                #continue
-            
-            #else:
-    
-                #record=row.split(',')   
-                #Q_ID=record[0][:-1]
-                #student_ID=record[3][:-1]
-                #Q_IDLst.append(Q_ID)
-                #stud_IDLst.append(student_ID) 
-                
+
+pre=cursor.execute("SELECT SUM(pre_tax_amounts) FROM employeeTable_e;")
+print(cursor.fetchall()) 
+
+
+tax=cursor.execute("SELECT SUM(tax_amounts) FROM employeeTable_e;")
+print(cursor.fetchall()) 
+
